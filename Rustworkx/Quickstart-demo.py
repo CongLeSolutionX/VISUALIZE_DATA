@@ -1,33 +1,38 @@
 import rustworkx as rx
+from typing import Tuple
 
 graph = rx.PyGraph()
 
-# Each time add node is called, it returns a new node index
-a = graph.add_node("A")
-b = graph.add_node("B")
-c = graph.add_node("C")
+# Adding nodes with descriptive variable names
+node_a = graph.add_node("A")
+node_b = graph.add_node("B")
+node_c = graph.add_node("C")
 
-# add_edges_from takes tuples of node indices and weights,
-# and returns edge indices
-graph.add_edges_from([(a, b, 1.5), (a, c, 5.0), (b, c, 2.5)])
-
+# Tuple type hint for clarity
+edge_list: list[Tuple[int, int, float]] = [(node_a, node_b, 1.5), (node_a, node_c, 5.0), (node_b, node_c, 2.5)]
+# Adding edges with more descriptive variable names
+graph.add_edges_from(edge_list)
 
 # Examining elements of a graph
-node_indices = graph.node_indices()
-edge_indices = graph.edge_indices()
-print(node_indices)
-print(edge_indices)
+node_indices = list(graph.node_indices())
+edge_indices = list(graph.edge_indices())
+print(f"Node Indices: {node_indices}")
+print(f"Edge Indices: {edge_indices}")
 
-print("The first index data on the graph is:")
-first_index_data = graph[node_indices[0]]
-print(first_index_data)
+print(f"Data for first node index ({node_indices[0]}): {graph[node_indices[0]]}")
 
-first_index_data = graph.get_edge_data_by_index(edge_indices[0])
-first_index_edgepoints = graph.get_edge_endpoints_by_index(edge_indices[0])
-print(first_index_edgepoints)
-print(first_index_data)
+# Accessing edge data using consistent descriptive variable names
+first_edge_index: int = edge_indices[0]
 
-# Returns the path A -> B -> C
-result = rx.dijkstra_shortest_paths(graph, a, c, weight_fn=float)
-print("The shortest path between A and C is:")
-print(result)
+# Getting edge endpoints and data by their index is more readable than the bracket access in this case.
+first_edge_endpoints: Tuple[int, int] = graph.get_edge_endpoints_by_index(first_edge_index)
+first_edge_data: float = graph.get_edge_data_by_index(first_edge_index)
+
+print(f"Endpoints of first edge ({first_edge_index}): {first_edge_endpoints}")
+print(f"Data for first edge ({first_edge_index}): {first_edge_data}")
+
+# # Get the shortest path & distance using Dijkstra's algorithm
+#rx.dijkstra_shortest_paths(graph, node_a, node_c, weight_fn=float)
+path = rx.dijkstra_shortest_paths(graph, node_a, node_c, weight_fn=float)
+print(path)
+print(f"The shortest path from A to C is: {path}")
